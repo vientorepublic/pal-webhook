@@ -1,0 +1,9 @@
+services:
+  webhook:
+    # build: .
+    image: pal-webhook:latest
+    container_name: pal-webhook
+    restart: always
+    environment:
+      NODE_ENV: production
+      NODE_OPTIONS: --no-deprecation
