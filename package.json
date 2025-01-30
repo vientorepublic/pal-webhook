@@ -2,6 +2,8 @@
   "name": "pal-webhook",
   "version": "1.0.0",
   "description": "국회 입법예고 디스코드 웹훅 알리미",
+  "author": "vientorepublic",
+  "license": "MIT",
   "main": "./dist/index.js",
   "scripts": {
     "build": "tsc",
@@ -13,8 +15,6 @@
     "type": "git",
     "url": "git+https://github.com/vientorepublic/pal-webhook.git"
   },
-  "author": "vientorepublic",
-  "license": "ISC",
   "bugs": {
     "url": "https://github.com/vientorepublic/pal-webhook/issues"
   },
