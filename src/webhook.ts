@@ -3,7 +3,7 @@ import { MessageBuilder, Webhook } from 'discord-webhook-node';
 import NodeCache from 'node-cache';
 import { isEqual } from 'lodash';
 import { CronJob } from 'cron';
-import consola from 'consola';
+import { Log } from './log';
 
 const avatar = process.env.AVATAR_URL;
 const cronExpression = process.env.CRON_EXPRESSION || '*/10 * * * *';
@@ -13,8 +13,10 @@ export class PalWebhook {
   public url: string;
   private cache: NodeCache;
   private webhook: Webhook;
+  private logger: Log;
   constructor(url: string) {
     this.url = url;
+    this.logger = new Log();
     this.cache = new NodeCache({
       stdTTL: 0,
       checkperiod: 0,
@@ -23,10 +25,10 @@ export class PalWebhook {
     this.getPalTable()
       .then((e) => {
         this.cache.set('palTable', e);
-        consola.success('Table cache initalized!');
+        this.logger.success('Table cache initalized!');
       })
       .catch((err) => {
-        consola.error(err);
+        this.logger.error(err);
       });
   }
 
@@ -63,7 +65,7 @@ export class PalWebhook {
         const cache = this.cache.get<ITableData[]>('palTable');
         const compare = this.compareTable(table, cache);
         if (compare.length !== 0) {
-          consola.info(`New data found: ${compare.length}`);
+          this.logger.info(`New data found: ${compare.length}`);
           compare.map((i) => {
             const embed = new MessageBuilder()
               .setTitle('국회 입법예고 알림')
