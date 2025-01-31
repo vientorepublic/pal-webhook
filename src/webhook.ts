@@ -33,10 +33,10 @@ export class PalWebhook {
 
   private initHook(): void {
     this.webhook = new Webhook(this.url);
+    this.webhook.setUsername('국회 입법예고 알리미');
     if (typeof avatar === 'string') {
       this.webhook.setAvatar(avatar);
     }
-    this.webhook.setUsername('국회 입법예고 알리미');
   }
 
   private async getPalTable(): Promise<ITableData[]> {
