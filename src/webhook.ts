@@ -1,7 +1,6 @@
 import { PalCrawl, type ITableData } from 'pal-crawl/dist/pal';
 import { MessageBuilder, Webhook } from 'discord-webhook-node';
 import NodeCache from 'node-cache';
-import { isEqual } from 'lodash';
 import { CronJob } from 'cron';
 import { Log } from './log';
 
@@ -83,9 +82,7 @@ export class PalWebhook {
               this.webhook.send(embed);
             });
           }
-          if (!cache || !isEqual(table, cache)) {
-            this.cache.set('palTable', table);
-          }
+          this.cache.set('palTable', table);
         } catch (err) {
           this.logger.error(err);
         }
