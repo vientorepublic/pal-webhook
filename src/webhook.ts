@@ -61,29 +61,33 @@ export class PalWebhook {
     const cron = new CronJob(
       cronExpression,
       async () => {
-        const table = await this.getPalTable();
-        const cache = this.cache.get<ITableData[]>('palTable');
-        const compare = this.compareTable(table, cache);
-        if (compare.length !== 0) {
-          this.logger.info(`New data found: ${compare.length}`);
-          compare.map((i) => {
-            const embed = new MessageBuilder()
-              .setTitle('국회 입법예고 알림')
-              .setDescription(
-                '새로운 입법예고가 감지되었습니다. 아래 정보를 확인하세요.',
-              )
-              .addField('법률안명', table[i].subject)
-              .addField('제안자 구분', table[i].proposerCategory)
-              .addField('소관위원회', table[i].committee)
-              .addField('자세히 보기', table[i].link)
-              .setColor(3144152)
-              .setTimestamp();
-            this.initHook();
-            this.webhook.send(embed);
-          });
-        }
-        if (!cache || !isEqual(table, cache)) {
-          this.cache.set('palTable', table);
+        try {
+          const table = await this.getPalTable();
+          const cache = this.cache.get<ITableData[]>('palTable');
+          const compare = this.compareTable(table, cache);
+          if (compare.length !== 0) {
+            this.logger.info(`New data found: ${compare.length}`);
+            compare.map((i) => {
+              const embed = new MessageBuilder()
+                .setTitle('국회 입법예고 알림')
+                .setDescription(
+                  '새로운 입법예고가 감지되었습니다. 아래 정보를 확인하세요.',
+                )
+                .addField('법률안명', table[i].subject)
+                .addField('제안자 구분', table[i].proposerCategory)
+                .addField('소관위원회', table[i].committee)
+                .addField('자세히 보기', table[i].link)
+                .setColor(3144152)
+                .setTimestamp();
+              this.initHook();
+              this.webhook.send(embed);
+            });
+          }
+          if (!cache || !isEqual(table, cache)) {
+            this.cache.set('palTable', table);
+          }
+        } catch (err) {
+          this.logger.error(err);
         }
       },
       null,
