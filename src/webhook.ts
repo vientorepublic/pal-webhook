@@ -20,15 +20,13 @@ export class PalWebhook {
       stdTTL: 0,
       checkperiod: 0,
     });
-    // init table cache
-    this.getPalTable()
-      .then((e) => {
-        this.cache.set('palTable', e);
-        this.logger.success('Table cache initalized!');
-      })
-      .catch((err) => {
-        this.logger.error(err);
-      });
+    this.initCache();
+  }
+
+  private async initCache(): Promise<void> {
+    const data = await this.getPalTable();
+    this.cache.set('palTable', data);
+    this.logger.success('Table cache initalized!');
   }
 
   private initHook(): void {
@@ -56,7 +54,7 @@ export class PalWebhook {
     return addedIndices;
   }
 
-  public setCronjob(): void {
+  public async start(): Promise<void> {
     const cron = new CronJob(
       cronExpression,
       async () => {
