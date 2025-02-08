@@ -11,6 +11,7 @@ const cronTimezone = process.env.CRON_TIMEZONE || 'Asia/Seoul';
 export class PalWebhook {
   public url: string;
   private cache: NodeCache;
+  private cronjob: CronJob;
   private webhook: Webhook;
   private logger: Log;
   constructor(url: string) {
@@ -20,7 +21,6 @@ export class PalWebhook {
       stdTTL: 0,
       checkperiod: 0,
     });
-    this.initCache();
   }
 
   private async initCache(): Promise<void> {
@@ -55,7 +55,10 @@ export class PalWebhook {
   }
 
   public async start(): Promise<void> {
-    const cron = new CronJob(
+    // Initalize table cache
+    this.initCache();
+    // Set cronjob
+    this.cronjob = new CronJob(
       cronExpression,
       async () => {
         try {
@@ -89,6 +92,10 @@ export class PalWebhook {
       null,
       cronTimezone,
     );
-    cron.start();
+    return this.cronjob.start();
+  }
+
+  public async stop(): Promise<void> {
+    return this.cronjob.stop();
   }
 }
