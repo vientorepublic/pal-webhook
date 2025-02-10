@@ -1,7 +1,8 @@
 import 'dotenv/config';
 import { PalWebhook } from './webhook';
+import { join } from 'path';
 
-const url = process.env.WEBHOOK_URL;
+const path = join(__dirname, '..', 'hook.txt');
 
-const palWebhook = new PalWebhook(url);
+const palWebhook = new PalWebhook(path);
 palWebhook.start();

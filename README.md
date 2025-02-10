@@ -16,16 +16,18 @@ git clone https://github.com/vientorepublic/pal-crawl.git
 npm install
 ```
 
-- `.env` 파일을 만들고 아래 내용 입력
+- `hook.txt` 파일을 만들고 디스코드 웹훅 URL을 입력 (필수)
+
+> [!NOTE]  
+> 웹훅 여러개를 사용할 수 있습니다. 한 줄에 하나씩 URL을 입력하세요.
+
+- `.env` 파일을 만들고 아래 내용 입력 (선택)
 
 ```
-WEBHOOK_URL=
 AVATAR_URL=
 CRON_EXPRESSION=
 CRON_TIMEZONE=
 ```
-
-환경변수 `WEBHOOK_URL` 값은 필수입니다.
 
 `CRON_EXPRESSION` 기본값: `*/10 * * * *`
 
@@ -59,9 +61,9 @@ node dist/index.js
 import 'dotenv/config';
 import { PalWebhook } from './webhook';
 
-const url = process.env.WEBHOOK_URL;
+const path = join(__dirname, '..', 'hook.txt');
 
-const palWebhook = new PalWebhook(url);
+const palWebhook = new PalWebhook(path);
 palWebhook.start();
 ```
 
@@ -73,9 +75,9 @@ palWebhook.start();
 import 'dotenv/config';
 import { PalWebhook } from './webhook';
 
-const url = process.env.WEBHOOK_URL;
+const path = join(__dirname, '..', 'hook.txt');
 
-const palWebhook = new PalWebhook(url);
+const palWebhook = new PalWebhook(path);
 palWebhook.start();
 
 // 예시: 5초(5000ms)후 크론잡 종료
