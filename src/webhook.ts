@@ -31,6 +31,9 @@ export class PalWebhook {
   }
 
   private async initCache(): Promise<void> {
+    // list all webhook
+    const hook = await this.readFileArray(this.path);
+    console.log(hook);
     const data = await this.getPalTable();
     this.cache.set('palTable', data);
     this.logger.success('Table cache initalized!');
@@ -73,8 +76,8 @@ export class PalWebhook {
           if (compare.length !== 0) {
             this.logger.info(`New data found: ${compare.length}`);
             const hook = await this.readFileArray(this.path);
-            hook.map((e) => {
-              compare.map((i) => {
+            compare.forEach((i) => {
+              hook.forEach((url) => {
                 const embed = new MessageBuilder()
                   .setTitle('국회 입법예고 알림')
                   .setDescription(
@@ -86,7 +89,7 @@ export class PalWebhook {
                   .addField('자세히 보기', table[i].link)
                   .setColor(3144152)
                   .setTimestamp();
-                this.initHook(e);
+                this.initHook(url);
                 this.webhook.send(embed);
               });
             });
