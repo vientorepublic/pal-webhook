@@ -31,9 +31,6 @@ export class PalWebhook {
   }
 
   private async initCache(): Promise<void> {
-    // list all webhook
-    const hook = await this.readFileArray(this.path);
-    console.log(hook);
     const data = await this.getPalTable();
     this.cache.set('palTable', data);
     this.logger.success('Table cache initalized!');
