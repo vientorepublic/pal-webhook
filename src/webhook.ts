@@ -48,22 +48,22 @@ export class PalWebhook {
     oldTable: ITableData[],
     newTable: ITableData[],
   ): number[] {
-    const oldSubjects = oldTable.map((item) => item.subject);
-    const newSubjects = newTable.map((item) => item.subject);
+    const oldLinks = oldTable.map((item) => item.link);
+    const newLinks = newTable.map((item) => item.link);
 
-    // old와 new의 subject 집합이 완전히 같고, 순서만 바뀐 경우는 변경 없음으로 간주
-    const oldSet = new Set(oldSubjects);
-    const newSet = new Set(newSubjects);
+    // old와 new의 link 집합이 완전히 같고, 순서만 바뀐 경우는 변경 없음으로 간주
+    const oldSet = new Set(oldLinks);
+    const newSet = new Set(newLinks);
     if (
       oldSet.size === newSet.size &&
-      [...oldSet].every((subject) => newSet.has(subject))
+      [...oldSet].every((link) => newSet.has(link))
     ) {
       return [];
     }
 
-    // newTable에만 존재하는 subject의 인덱스 반환
+    // newTable에만 존재하는 link의 인덱스 반환
     return newTable
-      .map((item, index) => (!oldSet.has(item.subject) ? index : -1))
+      .map((item, index) => (!oldSet.has(item.link) ? index : -1))
       .filter((index) => index !== -1);
   }
 
