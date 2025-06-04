@@ -123,6 +123,16 @@ export class PalWebhook {
     );
 
     this.cronjob.start();
+
+    // Graceful shutdown on SIGTERM, SIGINT
+    const shutdown = (signal: string) => {
+      this.logger.info(`Received ${signal}. Shutting down gracefully...`);
+      this.stop();
+      process.exit(0);
+    };
+
+    process.once('SIGTERM', () => shutdown('SIGTERM'));
+    process.once('SIGINT', () => shutdown('SIGINT'));
   }
 
   public stop(): void {

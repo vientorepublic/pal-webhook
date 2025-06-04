@@ -1,7 +1,6 @@
 services:
   webhook:
-    # build: .
-    image: pal-webhook:latest
+    build: .
     container_name: pal-webhook
     restart: always
     environment:
