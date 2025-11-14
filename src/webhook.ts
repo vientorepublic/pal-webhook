@@ -1,4 +1,4 @@
-import { PalCrawl, type ITableData } from 'pal-crawl/dist/pal';
+import { PalCrawl, type ITableData } from 'pal-crawl';
 import { MessageBuilder, Webhook } from 'discord-webhook-node';
 import NodeCache from 'node-cache';
 import { CronJob } from 'cron';
