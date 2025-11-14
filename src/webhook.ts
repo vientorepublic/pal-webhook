@@ -1,4 +1,4 @@
-import { PalCrawl, type ITableData } from 'pal-crawl/dist/pal';
+import { PalCrawl, type ITableData } from 'pal-crawl';
 import { MessageBuilder, Webhook } from 'discord-webhook-node';
 import NodeCache from 'node-cache';
 import { CronJob } from 'cron';
@@ -48,10 +48,22 @@ export class PalWebhook {
     oldTable: ITableData[],
     newTable: ITableData[],
   ): number[] {
+    const oldLinks = oldTable.map((item) => item.link);
+    const newLinks = newTable.map((item) => item.link);
+
+    // old와 new의 link 집합이 완전히 같고, 순서만 바뀐 경우는 변경 없음으로 간주
+    const oldSet = new Set(oldLinks);
+    const newSet = new Set(newLinks);
+    if (
+      oldSet.size === newSet.size &&
+      [...oldSet].every((link) => newSet.has(link))
+    ) {
+      return [];
+    }
+
+    // newTable에만 존재하는 link의 인덱스 반환
     return newTable
-      .map((item, index) =>
-        !oldTable.some((oldItem) => oldItem.num === item.num) ? index : -1,
-      )
+      .map((item, index) => (!oldSet.has(item.link) ? index : -1))
       .filter((index) => index !== -1);
   }
 
@@ -111,6 +123,16 @@ export class PalWebhook {
     );
 
     this.cronjob.start();
+
+    // Graceful shutdown on SIGTERM, SIGINT
+    const shutdown = (signal: string) => {
+      this.logger.info(`Received ${signal}. Shutting down gracefully...`);
+      this.stop();
+      process.exit(0);
+    };
+
+    process.once('SIGTERM', () => shutdown('SIGTERM'));
+    process.once('SIGINT', () => shutdown('SIGINT'));
   }
 
   public stop(): void {
